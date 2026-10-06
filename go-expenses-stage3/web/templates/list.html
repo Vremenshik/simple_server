@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>Список трат</title>
+    <style>
+        body { font-family: Arial; max-width: 800px; margin: 20px auto; padding: 0 20px; }
+        nav a { margin-right: 15px; color: #3498db; text-decoration: none; font-weight: bold; }
+        table { border-collapse: collapse; width: 100%; background: white; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background: #ecf0f1; }
+        .btn { display: inline-block; padding: 8px 14px; background: #27ae60; color: white;
+               text-decoration: none; border-radius: 4px; font-weight: bold; margin-top: 10px; }
+        .btn-edit { background: #f39c12; padding: 4px 10px; font-size: 13px; }
+        .btn-del  { background: #e74c3c; padding: 4px 10px; font-size: 13px; }
+        .empty { color: #777; font-style: italic; padding: 20px 0; }
+    </style>
+</head>
+<body>
+    <h1>Учёт личных трат</h1>
+    <nav>
+        <a href="/">Список</a>
+        <a href="/add">Добавить</a>
+    </nav>
+    <hr>
+
+    <h2>Список трат</h2>
+
+    {{if .}}
+    <table>
+        <tr>
+            <th>ID</th><th>Сумма</th><th>Описание</th><th>Дата</th><th>Действия</th>
+        </tr>
+        {{range .}}
+        <tr>
+            <td>{{.ID}}</td>
+            <td>{{.Amount}}</td>
+            <td>{{.Description}}</td>
+            <td>{{.Date}}</td>
+            <td>
+                <a class="btn btn-edit" href="/edit?id={{.ID}}">✏️</a>
+                <a class="btn btn-del" href="/delete?id={{.ID}}"
+                   onclick="return confirm('Удалить трату?')">🗑</a>
+            </td>
+        </tr>
+        {{end}}
+    </table>
+    {{else}}
+    <p class="empty">Пока нет ни одной траты</p>
+    {{end}}
+
+    <a class="btn" href="/add">+ Добавить трату</a>
+</body>
+</html>

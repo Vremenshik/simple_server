@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>Редактировать трату</title>
+    <style>
+        body { font-family: Arial; max-width: 800px; margin: 20px auto; padding: 0 20px; }
+        nav a { margin-right: 15px; color: #3498db; text-decoration: none; font-weight: bold; }
+        label { display: block; font-weight: bold; margin-top: 12px; }
+        input, select { padding: 8px; font-size: 14px; width: 300px; }
+        button { margin-top: 15px; padding: 10px 20px; background: #f39c12; color: white;
+                 border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .btn-back { display: inline-block; margin-top: 15px; color: #3498db; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <h1>Учёт личных трат</h1>
+    <nav>
+        <a href="/">Список</a>
+        <a href="/add">Добавить</a>
+        <a href="/logout" style="float: right; color: #e74c3c;">Выйти</a>
+    </nav>
+    <hr>
+
+    <h2>Редактировать трату #{{.Expense.ID}}</h2>
+
+    <form method="POST" action="/edit?id={{.Expense.ID}}">
+        <label>Сумма:</label>
+        <input type="number" step="0.01" name="amount" value="{{.Expense.Amount}}" required>
+
+        <label>Описание:</label>
+        <input type="text" name="description" value="{{.Expense.Description}}" required>
+
+        <label>Дата:</label>
+        <input type="date" name="date" value="{{.Expense.Date}}" required>
+
+        <label>Категория:</label>
+        <select name="category_id">
+            <option value="">Без категории</option>
+            {{range .Categories}}
+                <option value="{{.ID}}" {{if eq .ID $.CurrentCatID}}selected{{end}}>{{.Name}}</option>
+            {{end}}
+        </select>
+
+        <br>
+        <button type="submit">Сохранить</button>
+    </form>
+
+    <a class="btn-back" href="/">← Назад</a>
+</body>
+</html>

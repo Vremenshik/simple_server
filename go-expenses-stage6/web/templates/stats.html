@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>Статистика расходов</title>
+    <!-- Подключаем Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: Arial; max-width: 1000px; margin: 20px auto; padding: 0 20px; }
+        nav a { margin-right: 15px; color: #3498db; text-decoration: none; font-weight: bold; }
+        .charts-container { display: flex; justify-content: space-between; margin-top: 30px; gap: 20px; flex-wrap: wrap; }
+        .chart-box { flex: 1; min-width: 300px; background: white; padding: 20px; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+    <h1>Статистика расходов</h1>
+    <nav>
+        <a href="/">Список</a>
+        <a href="/add">Добавить</a>
+        <a href="/stats" style="color: #f39c12; font-weight: bold;">📊 Статистика</a>
+        <a href="/logout" style="float: right; color: #e74c3c;">Выйти</a>
+    </nav>
+    <hr>
+
+    <div class="charts-container">
+        <div class="chart-box">
+            <h3 style="text-align: center;">Траты по категориям</h3>
+            <canvas id="categoryChart"></canvas>
+        </div>
+        <div class="chart-box">
+            <h3 style="text-align: center;">Траты по месяцам</h3>
+            <canvas id="monthChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        // 1. Круговая диаграмма по категориям
+        fetch('/api/stats/by-category')
+            .then(response => response.json())
+            .then(data => {
+                if (!data || data.length === 0) data = [{name: 'Нет данных', total: 1}];
+                
+                const labels = data.map(item => item.name);
+                const totals = data.map(item => item.total);
+
+                new Chart(document.getElementById('categoryChart'), {
+                    type: 'pie',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: totals,
+                            backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#FFCD56']
+                        }]
+                    }
+                });
+            });
+
+        // 2. Столбчатая диаграмма по месяцам
+        fetch('/api/stats/by-month')
+            .then(response => response.json())
+            .then(data => {
+                if (!data || data.length === 0) data = [{month: 'Нет данных', total: 0}];
+
+                const labels = data.map(item => item.month);
+                const totals = data.map(item => item.total);
+
+                new Chart(document.getElementById('monthChart'), {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Сумма (₽)',
+                            data: totals,
+                            backgroundColor: '#36A2EB',
+                            borderRadius: 5
+                        }]
+                    },
+                    options: {
+                        scales: { y: { beginAtZero: true } }
+                    }
+                });
+            });
+    </script>
+</body>
+</html>
